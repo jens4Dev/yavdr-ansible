@@ -9,6 +9,13 @@
     dest: /lib/firmware/dvb-demod-si2168-b40-01.fw
   when: '"2040:0264" in usb or "2013:025f" in usb'
 
+- name: Firmware dvb-demod-si2168-d60-01.fw for Hauppauge WinTV-dualHD
+  get_url:
+    url: https://github.com/CoreELEC/dvb-firmware/raw/master/firmware/dvb-demod-si2168-d60-01.fw
+    checksum: sha256:5E1C860E95A8D92B2716B0075DD00E55F99C2C368E35340F6B527C366FF27EE7
+    dest: /lib/firmware/dvb-demod-si2168-d60-01.fw
+  when: '"2040:8265" in usb'
+
 - name: Firmware dvb-fe-xc5000-1.6.114.fw for Hauppauge WinTV-HVR-930C
   get_url:
     url: https://github.com/OpenELEC/dvb-firmware/raw/master/firmware/dvb-fe-xc5000-1.6.114.fw
