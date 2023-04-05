@@ -29,3 +29,22 @@
     group: 'user'
     mode: 0644
     force: no
+
+- name: "vdr-config-backup | script to backup files mostly changed after installation and packages installed"
+  block:
+    - name: "Copy script"
+      copy:
+        src: vdr-config-backup
+        dest: '/usr/local/bin/vdr-config-backup'
+        owner: 'root'
+        group: 'root'
+        mode: 0744
+        force: yes
+    - name: "Copy file list if it does not exist"
+      copy:
+        src: vdr-config-backup.lst
+        dest: '/usr/local/etc/vdr-config-backup.lst'
+        owner: '{{ vdr.user }}'
+        group: 'user'
+        mode: 0664
+        force: no

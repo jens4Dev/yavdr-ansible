@@ -1,0 +1,17 @@
+/etc/vdr
+/etc/default/vdr
+/etc/yavdr-frontend
+/etc/cron.d/vdr-scan-epg
+/etc/vdr/conf.d/50-skindesigner.conf
+/var/lib/vdr/channels.conf
+/var/lib/vdr/remote.conf
+/var/lib/vdr/setup.conf
+/var/lib/vdr/timers.conf
+/var/lib/vdr/plugins/menuorg.xml
+/var/lib/vdr/plugins/noepg/settings.conf
+/usr/local/bin/temperatures.optiplex
+/usr/lib/vdr/plugins/skindesigner/scripts/vdrstats
+/usr/lib/vdr/plugins/skindesigner/scripts/temperatures
+/home/user/yavdr-ansible/host_vars/
+/home/user/.bash_aliases
+/usr/local/etc/vdr-config-backup.lst

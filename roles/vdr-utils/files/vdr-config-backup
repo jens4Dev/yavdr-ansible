@@ -1,0 +1,29 @@
+#!/bin/bash
+
+timestamp=$(date +%F_%H%M%S)
+backup=/srv/backups
+hname=$(hostname)
+backupfile=${hname}_config_${timestamp}
+scriptdir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+
+echo ${backupfile}
+
+# Diff Pakete
+dpkg --get-selections >$backup/installed_${timestamp}.txt
+# noch keine Basis vorhanden - dann die aktuelle dafür sichern
+if [[ ! -e ${backup}/base_installed.txt ]]; then
+   cp $backup/installed_${timestamp}.txt ${backup}/base_installed.txt
+fi
+
+# Partitionsschema
+parted -l >${backup}/parted_${timestamp}.txt
+
+# Alle Configs einpacken
+tar -cvf ${backup}/${backupfile}.tar -T ${scriptdir}/../etc/vdr-config-backup.lst
+tar -rvf ${backup}/${backupfile}.tar ${backup}/base_installed.txt ${backup}/installed_${timestamp}.txt ${backup}/parted_${timestamp}.txt
+
+gzip ${backup}/${backupfile}.tar
+
+# Aufräumen
+rm ${backup}/installed_${timestamp}.txt
+rm ${backup}/parted_${timestamp}.txt
