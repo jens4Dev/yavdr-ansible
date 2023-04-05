@@ -1,0 +1,20 @@
+#!/bin/bash
+
+#lastTwoDirs=`pwd | awk -F\/ '{print $(NF-1) "/" $(NF)}'`
+startDir=$(pwd | awk -F/ '{print $(NF-1)}')
+#echo $lastTwoDirs
+#echo $startDir
+filename="${startDir#%}"
+#echo $filename
+filename="${filename//_/ }"
+
+infile=00001.ts
+
+if [[ -e 00002.ts ]]; then
+   infile="concat:00001.ts|00002.ts"
+   if [[ -e 00003.ts ]]; then
+      infile="concat:00001.ts|00002.ts|00003.ts"
+   fi
+fi
+
+ffmpeg -i $infile -codec copy "$filename.mp4"

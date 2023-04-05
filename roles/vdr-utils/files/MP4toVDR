@@ -1,0 +1,86 @@
+#!/bin/bash
+
+mp4=0
+hevc=0
+
+if ls -- *.[Mm][Pp]4 1> /dev/null 2>&1; then
+   echo "MP4 gefunden!"
+   mp4=1
+fi
+if ls -- *.[Hh][Ee][Vv][Cc]* 1> /dev/null 2>&1; then
+   echo "HEVC gefunden!"
+   hevc=1
+fi
+
+if [[ ${mp4} -eq 0 && ${hevc} -eq 0 ]]; then
+   if [[ -n "$1" ]]; then
+      wget "$1"
+      wrc=$?
+      if [[ ${wrc} -ne 0 ]]; then
+         echo "WGET endet mit ${wrc} - Abbruch!"
+         exit
+      fi
+      if ls -- *.[Mm][Pp]4 1> /dev/null 2>&1; then
+         echo "MP4 gefunden!"
+         mp4=1
+      fi
+      if ls -- *.[Hh][Ee][Vv][Cc]* 1> /dev/null 2>&1; then
+         echo "HEVC gefunden!"
+         hevc=1
+      fi
+   else
+      echo "Kein MP4 ist da - Abbruch!"
+      exit 1
+   fi
+fi
+
+# Save ts
+if [[ -e 00001.ts ]]; then
+   mv 00001.ts 00001.ts.org
+   if [[ -e 00002.ts ]]; then
+      mv 00002.ts 00002.ts.org
+   fi
+fi
+
+# Save index
+mv index index.org
+
+# Convert
+if [[ ${hevc} -eq 0 ]]; then
+   ffmpeg -i -- *.[Mm][Pp]4 -map 0 -codec copy -codec:v copy -bsf:v h264_mp4toannexb 00001.ts
+else
+   ffmpeg -i -- *.[Hh][Ee][Vv][Cc]* -map 0 -codec copy -codec:v copy -bsf:v hevc_mp4toannexb 00001.ts
+fi
+frc=$?
+if [[ ${frc} -ne 0 ]]; then
+   echo "FFMPEG-Fehler - Abbruch!"
+   exit ${frc}
+fi
+
+# Create index
+echo "Creating index..."
+vdr --genindex "$(pwd)"
+vrc=$?
+if [[ ${vrc} -ne 0 ]]; then
+   echo "VDR-Fehler - Abbruch!"
+   exit ${vrc}
+fi
+
+# remove resume
+if [[ -e resume ]]; then
+   mv resume resume.org
+fi
+
+echo "Fix access and owner..."
+# remove x from SMB-access
+chmod 644 -- *
+# not fully save..
+#lastTwoDirs=`pwd | awk -F\/ '{print $(NF-1) "/" $(NF)}'`
+startDir=$(pwd | awk -F/ '{print $(NF-1)}')
+#echo $lastTwoDirs
+#echo $startDir
+#cd ../../
+# the X symbolic permission means "execute, if it makes sense" (https://stackoverflow.com/a/17091831)
+chmod -R u=rwX,go=rX ../../"$startDir"
+# Fixup file-rights
+chown -R vdr.vdr ../../"$startDir"

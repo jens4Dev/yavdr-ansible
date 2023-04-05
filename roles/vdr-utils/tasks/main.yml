@@ -1,0 +1,21 @@
+---
+
+# add some home-grown utilities
+
+- name: "MP4toVDR | script to convert mp4 to vdr-ts-files"
+  copy:
+    src: MP4toVDR
+    dest: '/usr/local/bin/MP4toVDR'
+    owner: 'root'
+    group: '{{ vdr.group }}'
+    mode: 0754
+    force: yes
+
+- name: "VDRtoMP4 | script to convert vdr-ts-files to mp4 with name from recording"
+  copy:
+    src: VDRtoMP4
+    dest: '/usr/local/bin/VDRtoMP4'
+    owner: 'root'
+    group: '{{ vdr.group }}'
+    mode: 0754
+    force: yes
