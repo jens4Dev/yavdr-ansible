@@ -15,3 +15,19 @@
     intel_boot_options: "video={{ drm.primary.drm_connector }}:D drm.edid_firmware={{ drm.primary.drm_connector }}:edid/{{ drm.primary.edid }}" # {% for ignored_c in drm.ignored_outputs %}video={{ ignored_c }}:d{% endfor %}"
   when: intel_set_boot_edid | bool
   notify: ['Update Initramfs', 'Update GRUB']
+
+# TODO: replace by a role to allow proper frontend selection (as in autoinstall-virtualbox-guest)
+
+- name: set softhdvaapi as default frontend for intel when no nvidia present
+  block:
+    - name: set softhdvaapi as preferred frontend
+      set_fact:
+        preferred_frontend: "softhdvaapi"
+    - name: install vdr-plugin-softhdvaapi
+      apt:
+        name:
+          - vdr-plugin-softhdvaapi
+        state: present
+    - name: set vdr_output_plugin variable
+      set_fact:
+        automatically_installed_output_plugin: vdr-plugin-softhdvaapi
