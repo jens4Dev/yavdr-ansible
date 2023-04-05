@@ -19,3 +19,13 @@
     group: '{{ vdr.group }}'
     mode: 0754
     force: yes
+
+# TODO Depends on fixed name of normal user..
+- name: "Create bash_aliases with some helpful definitions"
+  copy:
+    src: .bash_aliases
+    dest: '/home/user/.bash_aliases'
+    owner: 'user'
+    group: 'user'
+    mode: 0644
+    force: no
