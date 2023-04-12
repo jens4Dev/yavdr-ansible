@@ -20,7 +20,7 @@
     mode: 0754
     force: yes
 
-# not perfectly dynamical, but works when starting ansible like written in yavdr-doc
+# not perfect, but works when starting ansible like written in yavdr-doc
 - name: "Create bash_aliases with some helpful definitions"
   copy:
     src: .bash_aliases
