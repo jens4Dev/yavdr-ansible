@@ -24,7 +24,7 @@
 - name: "Create bash_aliases with some helpful definitions"
   copy:
     src: .bash_aliases
-    dest: '/home/{{ ansible_env.SUDO_USER }}/.bash_aliases'
+    dest: '/home/{{  ansible_env.SUDO_USER }}/.bash_aliases'
     owner: 'user'
     group: 'user'
     mode: 0644
