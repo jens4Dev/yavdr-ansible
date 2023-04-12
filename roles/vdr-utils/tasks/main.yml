@@ -20,11 +20,11 @@
     mode: 0754
     force: yes
 
-# TODO Depends on fixed name of normal user..
+# not perfectly dynamical, but works when starting ansible like written in yavdr-doc
 - name: "Create bash_aliases with some helpful definitions"
   copy:
     src: .bash_aliases
-    dest: '/home/user/.bash_aliases'
+    dest: '/home/{{ ansible_env.SUDO_USER }}/.bash_aliases'
     owner: 'user'
     group: 'user'
     mode: 0644
