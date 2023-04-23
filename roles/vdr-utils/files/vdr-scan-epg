@@ -1,0 +1,25 @@
+#!/bin/bash
+# Alle Commands laufen leider asynchron, also nach der Uhr warten..
+SVDRPCMD="/usr/bin/svdrpsend"
+LOG="/usr/bin/logger -t vdr-scan-epg"
+#
+WAIT_FOR_EPGSCAN=15m      # gemessen: 12m (?)
+WAIT_FOR_EPGSEARCH=60    # gemessen: 10s
+#
+#
+sleep 5
+# wegen zeitweiliger Tuning-Probleme auf den Kanal    
+#    $SVDRPCMD CHAN ProSieben 
+#    sleep 240 
+
+# EPG-Scan starten
+$SVDRPCMD SCAN
+sleep $WAIT_FOR_EPGSCAN
+$LOG "EPG-Scan update finished. Updating timer." &
+
+# EPG-Search anstossen
+$SVDRPCMD PLUG epgsearch UPDS OSD 
+sleep $WAIT_FOR_EPGSEARCH  
+$LOG "EPG-Search should be finished. Shutdown possible." &
+sleep 5
+$SVDRPCMD HITK Power
