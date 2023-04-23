@@ -109,18 +109,21 @@
 
 # gemäß <https://www.vdr-portal.de/forum/index.php?thread/134948-gel%C3%B6st-yavdr-ansible-einige-channellogos-werden-nicht-angezeigt/> in /etc/vdr/conf.d/50-skindesigner.conf noch ergänzen
 #    -l /var/lib/vdr/channellogos
-- name: check if -l to channellogos for skindesigner is there
-  lineinfile:
-    state: absent
-    path: /etc/vdr/conf.d/50-skindesigner.conf
-    regexp: "^/var/lib/vdr/channellogos"
-  check_mode: true
-  changed_when: false # This just makes things look prettier in the logs
-  register: check
+- name: Set path to channellogos for skindesigner
+  block:
+    - name: check if -l to channellogos for skindesigner is there
+      lineinfile:
+        state: absent
+        path: /etc/vdr/conf.d/50-skindesigner.conf
+        regexp: "^/var/lib/vdr/channellogos"
+      check_mode: true
+      changed_when: false # This just makes things look prettier in the logs
+      register: check
 
-- name: append -l to channellogos for skindesigner if not found in step before
-  lineinfile:
-    state: present
-    path: /etc/vdr/conf.d/50-skindesigner.conf
-    line: "-l /var/lib/vdr/channellogos"
-  when: check.found == 0
+    - name: append -l to channellogos for skindesigner if not found in step before
+      lineinfile:
+        state: present
+        path: /etc/vdr/conf.d/50-skindesigner.conf
+        line: "-l /var/lib/vdr/channellogos"
+      when: check.found == 0
+  when: '"vdr-plugin-skindesigner" in vdr_plugins'
