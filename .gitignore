@@ -8,4 +8,4 @@ __pycache__/
 *.tex
 
 # ignore local inventory changes
-host_vars/
+#host_vars/
