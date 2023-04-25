@@ -1,0 +1,129 @@
+---
+# add some home-grown utilities
+
+- name: "MP4toVDR | script to convert mp4 to vdr-ts-files"
+  copy:
+    src: MP4toVDR
+    dest: "/usr/local/bin/MP4toVDR"
+    owner: "root"
+    group: "{{ vdr.group }}"
+    mode: 0754
+    force: yes
+
+- name: "VDRtoMP4 | script to convert vdr-ts-files to mp4 with name from recording"
+  copy:
+    src: VDRtoMP4
+    dest: "/usr/local/bin/VDRtoMP4"
+    owner: "root"
+    group: "{{ vdr.group }}"
+    mode: 0754
+    force: yes
+
+# not perfect, but works when starting ansible like written in yavdr-doc
+- name: "Create bash_aliases with some helpful definitions"
+  copy:
+    src: .bash_aliases
+    dest: "/home/{{  ansible_env.SUDO_USER }}/.bash_aliases"
+    owner: "user"
+    group: "user"
+    mode: 0644
+    force: no
+
+- name: "vdr-config-backup | script to backup files mostly changed after installation and packages installed"
+  block:
+    - name: "Copy script"
+      copy:
+        src: vdr-config-backup
+        dest: "/usr/local/bin/vdr-config-backup"
+        owner: "root"
+        group: "root"
+        mode: 0744
+        force: yes
+    - name: "Copy file list if it does not exist"
+      copy:
+        src: vdr-config-backup.lst
+        dest: "/usr/local/etc/vdr-config-backup.lst"
+        owner: "{{ vdr.user }}"
+        group: "user"
+        mode: 0664
+        force: no
+
+# vdr-scan-epg
+# template cron.d-file with wakeup_time: "03:00" ?? 1. step template with second variable
+# could work with: "{{ wakeup_time.split(':').0 }}"
+# https://stackoverflow.com/questions/69475907/extract-a-substring-from-a-variable-in-ansible
+
+- name: "vdr-scan-epg | script to run nigthly EPG-update and auto-shutdown"
+  copy:
+    src: vdr-scan-epg
+    dest: "/usr/local/bin/vdr-scan-epg"
+    owner: "root"
+    group: "{{ vdr.group }}"
+    mode: 0754
+    force: no
+
+- name: create cron.d-file for vdr-scan-epg at wakeup_time
+  template:
+    src: "templates/vdr-scan-epg.j2"
+    dest: "/etc/cron.d/vdr-scan-epg"
+    mode: 0644
+    owner: "root"
+    group: "root"
+  when: (wakeup_time is defined) and (wakeup_time|length > 0)
+
+# system-info-file and symlinks
+# gemäß <https://www.vdr-portal.de/forum/index.php?thread/127901-0-6-0-plugin-systeminfo/> /usr/lib/vdr/plugins/skindesigner/scripts/README folgen und
+#     ln -s /usr/local/bin/temperatures.optiplex temperatures
+#     ln -s vdrstats.default vdrstats
+#     sudo chmod a+x vdrstats.default
+- name: Configure systeminfo for skindesigner (specfic for new vdr-hardware)
+  block:
+    - name: "temperatures.optiplex | script to get systeminfo for new hardware"
+      copy:
+        src: temperatures.optiplex
+        dest: "/usr/local/bin/temperatures.optiplex"
+        owner: "root"
+        group: "{{ vdr.group }}"
+        mode: 0754
+        force: no
+    - name: "set symlink to temperatures.optiplex from skindesigner/scripts"
+      ansible.builtin.file:
+        src: /usr/local/bin/temperatures.optiplex
+        dest: /usr/lib/vdr/plugins/skindesigner/scripts/temperatures
+        owner: root
+        group: "{{ vdr.group }}"
+        state: link
+    - name: "set symlink to vdrstats.default"
+      ansible.builtin.file:
+        src: /usr/lib/vdr/plugins/skindesigner/scripts/vdrstats.default
+        dest: /usr/lib/vdr/plugins/skindesigner/scripts/vdrstats
+        owner: root
+        group: "{{ vdr.group }}"
+        state: link
+    - name: "set attributes to vdrstats.default"
+      ansible.builtin.file:
+        path: /usr/lib/vdr/plugins/skindesigner/scripts/vdrstats.default
+        owner: root
+        group: "{{ vdr.group }}"
+        mode: 0754
+
+# gemäß <https://www.vdr-portal.de/forum/index.php?thread/134948-gel%C3%B6st-yavdr-ansible-einige-channellogos-werden-nicht-angezeigt/> in /etc/vdr/conf.d/50-skindesigner.conf noch ergänzen
+#    -l /var/lib/vdr/channellogos
+- name: Set path to channellogos for skindesigner
+  block:
+    - name: check if -l to channellogos for skindesigner is there
+      lineinfile:
+        state: absent
+        path: /etc/vdr/conf.d/50-skindesigner.conf
+        regexp: "^/var/lib/vdr/channellogos"
+      check_mode: true
+      changed_when: false # This just makes things look prettier in the logs
+      register: check
+
+    - name: append -l to channellogos for skindesigner if not found in step before
+      lineinfile:
+        state: present
+        path: /etc/vdr/conf.d/50-skindesigner.conf
+        line: "-l /var/lib/vdr/channellogos"
+      when: check.found == 0
+  when: '"vdr-plugin-skindesigner" in vdr_plugins'
