@@ -9,3 +9,4 @@ __pycache__/
 
 # ignore local inventory changes
 #host_vars/
+*.log
