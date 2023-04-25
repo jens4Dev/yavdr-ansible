@@ -1,0 +1,42 @@
+---
+# install latest version from https://github.com/jsffm/vdr-transcode
+
+- name: Clone latest from vdr-transcode
+  ansible.builtin.git:
+    repo: https://github.com/jsffm/vdr-transcode.git
+    dest: "/usr/local/src/vdr-transcode"
+
+# copy file-by-file to get correct ownership
+
+- name: "vdr-transcode | Copy main script"
+  copy:
+    src: /usr/local/src/vdr-transcode/vdr-transcode
+    dest: "/usr/local/bin/vdr-transcode"
+    owner: "root"
+    group: "{{ vdr.group }}"
+    mode: 0754
+    force: yes
+
+- name: "vdr-transcode | Copy main script's sym-link"
+  copy:
+    src: /usr/local/src/vdr-transcode/vt
+    dest: "/usr/local/bin/vt"
+    owner: "root"
+    group: "{{ vdr.group }}"
+    mode: 0754
+    force: yes
+
+- name: "vdr-transcode.conf | Copy config file"
+  copy:
+    src: /usr/local/src/vdr-transcode/vdr-transcode.conf
+    dest: "/etc/vdr-transcode.conf"
+    owner: "root"
+    group: "{{ vdr.group }}"
+    mode: 0754
+    force: no
+
+- name: set VIDEODIR for shells in /etc/profile.d/
+  template:
+    src: vdr-transcode-videodir.sh.j2
+    dest: /etc/profile.d/vdr-transcode-videodir.sh
+  notify: ["reboot required"]
