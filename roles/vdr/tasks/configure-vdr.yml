@@ -1,0 +1,497 @@
+---
+# set  a lot of config how I like it..
+
+## general
+
+- name: set MenuScrollWrap
+  lineinfile:
+    owner: "{{  vdr.user  }}"
+    group: "{{  vdr.group }}"
+    create: yes
+    path: "{{ vdr.home }}/setup.conf"
+    regexp: "^MenuScrollWrap"
+    line: "MenuScrollWrap = 1"
+
+- name: set MenuKeyCloses
+  lineinfile:
+    owner: "{{  vdr.user  }}"
+    group: "{{  vdr.group }}"
+    create: yes
+    path: "{{ vdr.home }}/setup.conf"
+    regexp: "^MenuKeyCloses"
+    line: "MenuKeyCloses = 1"
+
+- name: set UseVps
+  lineinfile:
+    owner: "{{  vdr.user  }}"
+    group: "{{  vdr.group }}"
+    create: yes
+    path: "{{ vdr.home }}/setup.conf"
+    regexp: "^UseVps"
+    line: "UseVps = 1"
+
+- name: set PauseKeyHandling
+  lineinfile:
+    owner: "{{  vdr.user  }}"
+    group: "{{  vdr.group }}"
+    create: yes
+    path: "{{ vdr.home }}/setup.conf"
+    regexp: "^PauseKeyHandling"
+    line: "PauseKeyHandling = 0"
+
+- name: set OSDMessageTime
+  lineinfile:
+    owner: "{{  vdr.user  }}"
+    group: "{{  vdr.group }}"
+    create: yes
+    path: "{{ vdr.home }}/setup.conf"
+    regexp: "^OSDMessageTime"
+    line: "OSDMessageTime = 2"
+
+- name: set OSDHeightP
+  lineinfile:
+    owner: "{{  vdr.user  }}"
+    group: "{{  vdr.group }}"
+    create: yes
+    path: "{{ vdr.home }}/setup.conf"
+    regexp: "^OSDHeightP"
+    line: "OSDHeightP =  0.960000"
+
+- name: set OSDWidthP
+  lineinfile:
+    owner: "{{  vdr.user  }}"
+    group: "{{  vdr.group }}"
+    create: yes
+    path: "{{ vdr.home }}/setup.conf"
+    regexp: "^OSDWidthP"
+    line: "OSDWidthP = 0.960000"
+
+- name: set OSDLeftP
+  lineinfile:
+    owner: "{{  vdr.user  }}"
+    group: "{{  vdr.group }}"
+    create: yes
+    path: "{{ vdr.home }}/setup.conf"
+    regexp: "^OSDLeftP"
+    line: "OSDLeftP = 0.020000"
+
+- name: set OSDTopP
+  lineinfile:
+    owner: "{{  vdr.user  }}"
+    group: "{{  vdr.group }}"
+    create: yes
+    path: "{{ vdr.home }}/setup.conf"
+    regexp: "^OSDTopP"
+    line: "OSDTopP = 0.020000"
+
+- name: set OSDMessageTime
+  lineinfile:
+    owner: "{{  vdr.user  }}"
+    group: "{{  vdr.group }}"
+    create: yes
+    path: "{{ vdr.home }}/setup.conf"
+    regexp: "^OSDMessageTime"
+    line: "OSDMessageTime = 2"
+
+- name: set UndeleteTimeOut
+  lineinfile:
+    owner: "{{  vdr.user  }}"
+    group: "{{  vdr.group }}"
+    create: yes
+    path: "{{ vdr.home }}/setup.conf"
+    regexp: "^UndeleteTimeOut"
+    line: "UndeleteTimeOut = 10"
+
+- name: set MarginStart
+  lineinfile:
+    owner: "{{  vdr.user  }}"
+    group: "{{  vdr.group }}"
+    create: yes
+    path: "{{ vdr.home }}/setup.conf"
+    regexp: "^MarginStart"
+    line: "MarginStart = 10"
+
+- name: set MarginStop
+  lineinfile:
+    owner: "{{  vdr.user  }}"
+    group: "{{  vdr.group }}"
+    create: yes
+    path: "{{ vdr.home }}/setup.conf"
+    regexp: "^MarginStop"
+    line: "MarginStop = 15"
+
+- name: set InitialChannel
+  lineinfile:
+    owner: "{{  vdr.user  }}"
+    group: "{{  vdr.group }}"
+    create: yes
+    path: "{{ vdr.home }}/setup.conf"
+    regexp: "^InitialChannel"
+    line: "InitialChannel = C-9999-111-11155"
+
+- name: set MultiSpeedMode
+  lineinfile:
+    owner: "{{  vdr.user  }}"
+    group: "{{  vdr.group }}"
+    create: yes
+    path: "{{ vdr.home }}/setup.conf"
+    regexp: "^MultiSpeedMode"
+    line: "MultiSpeedMode = 1"
+
+- name: set PauseOnMarkSet
+  lineinfile:
+    owner: "{{  vdr.user  }}"
+    group: "{{  vdr.group }}"
+    create: yes
+    path: "{{ vdr.home }}/setup.conf"
+    regexp: "^PauseOnMarkSet"
+    line: "PauseOnMarkSet = 1"
+
+- name: set PauseKeyHandling
+  lineinfile:
+    owner: "{{  vdr.user  }}"
+    group: "{{  vdr.group }}"
+    create: yes
+    path: "{{ vdr.home }}/setup.conf"
+    regexp: "^PauseAtLastMark"
+    line: "PauseAtLastMark = 1"
+
+- name: set ShowRemainingTime
+  lineinfile:
+    owner: "{{  vdr.user  }}"
+    group: "{{  vdr.group }}"
+    create: yes
+    path: "{{ vdr.home }}/setup.conf"
+    regexp: "^ShowRemainingTime"
+    line: "ShowRemainingTime = 1"
+
+- name: set ShowReplayMode
+  lineinfile:
+    owner: "{{  vdr.user  }}"
+    group: "{{  vdr.group }}"
+    create: yes
+    path: "{{ vdr.home }}/setup.conf"
+    regexp: "^ShowReplayMode"
+    line: "ShowReplayMode = 1"
+
+- name: set SkipEdited
+  lineinfile:
+    owner: "{{  vdr.user  }}"
+    group: "{{  vdr.group }}"
+    create: yes
+    path: "{{ vdr.home }}/setup.conf"
+    regexp: "^SkipEdited"
+    line: "SkipEdited = 1"
+
+- name: set DelTimeshiftRec
+  lineinfile:
+    owner: "{{  vdr.user  }}"
+    group: "{{  vdr.group }}"
+    create: yes
+    path: "{{ vdr.home }}/setup.conf"
+    regexp: "^DelTimeshiftRec"
+    line: "DelTimeshiftRec = 1"
+
+## plugin specific
+
+### skindesigner
+
+- name: set OSDSkin
+  lineinfile:
+    owner: "{{  vdr.user  }}"
+    group: "{{  vdr.group }}"
+    create: yes
+    path: "{{ vdr.home }}/setup.conf"
+    regexp: "^OSDSkin"
+    line: "OSDSkin = metrixhd"
+  when: '"vdr-plugin-skindesigner" in vdr_plugins'
+
+- name: set OSDTheme
+  lineinfile:
+    owner: "{{  vdr.user  }}"
+    group: "{{  vdr.group }}"
+    create: yes
+    path: "{{ vdr.home }}/setup.conf"
+    regexp: "^OSDTheme"
+    line: "OSDTheme = orange"
+  when: '"vdr-plugin-skindesigner" in vdr_plugins'
+
+- name: set metrixhd.showdevices
+  lineinfile:
+    owner: "{{  vdr.user  }}"
+    group: "{{  vdr.group }}"
+    create: yes
+    path: "{{ vdr.home }}/setup.conf"
+    regexp: "^skindesigner.metrixhd.showdevices"
+    line: "skindesigner.metrixhd.showdevices = 1"
+  when: '"vdr-plugin-skindesigner" in vdr_plugins'
+
+- name: set metrixhd.showweather
+  lineinfile:
+    owner: "{{  vdr.user  }}"
+    group: "{{  vdr.group }}"
+    create: yes
+    path: "{{ vdr.home }}/setup.conf"
+    regexp: "^skindesigner.metrixhd.showweather"
+    line: "skindesigner.metrixhd.showweather = 0"
+  when: '"vdr-plugin-skindesigner" in vdr_plugins'
+
+### epgsearch
+
+- name: set CheckConflictsAfterTimerProg
+  lineinfile:
+    owner: "{{  vdr.user  }}"
+    group: "{{  vdr.group }}"
+    create: yes
+    path: "{{ vdr.home }}/setup.conf"
+    regexp: "^epgsearch.CheckConflictsAfterTimerProg"
+    line: "epgsearch.CheckConflictsAfterTimerProg = 1"
+  when: '"vdr-plugin-epgsearch" in vdr_plugins'
+
+- name: set CheckEPGChannelgroup
+  lineinfile:
+    owner: "{{  vdr.user  }}"
+    group: "{{  vdr.group }}"
+    create: yes
+    path: "{{ vdr.home }}/setup.conf"
+    regexp: "^epgsearch.CheckEPGChannelgroup"
+    line: "epgsearch.CheckEPGChannelgroup = 0"
+  when: '"vdr-plugin-epgsearch" in vdr_plugins'
+
+- name: set DefMarginStart
+  lineinfile:
+    owner: "{{  vdr.user  }}"
+    group: "{{  vdr.group }}"
+    create: yes
+    path: "{{ vdr.home }}/setup.conf"
+    regexp: "^epgsearch.DefMarginStart"
+    line: "epgsearch.DefMarginStart = 10"
+  when: '"vdr-plugin-epgsearch" in vdr_plugins'
+
+- name: set DefMarginStop
+  lineinfile:
+    owner: "{{  vdr.user  }}"
+    group: "{{  vdr.group }}"
+    create: yes
+    path: "{{ vdr.home }}/setup.conf"
+    regexp: "^epgsearch.DefMarginStop"
+    line: "epgsearch.DefMarginStop = 15"
+  when: '"vdr-plugin-epgsearch" in vdr_plugins'
+
+- name: set HideMenu
+  lineinfile:
+    owner: "{{  vdr.user  }}"
+    group: "{{  vdr.group }}"
+    create: yes
+    path: "{{ vdr.home }}/setup.conf"
+    regexp: "^epgsearch.HideMenu"
+    line: "epgsearch.HideMenu = 1"
+  when: '"vdr-plugin-epgsearch" in vdr_plugins'
+
+- name: set IgnorePayTV
+  lineinfile:
+    owner: "{{  vdr.user  }}"
+    group: "{{  vdr.group }}"
+    create: yes
+    path: "{{ vdr.home }}/setup.conf"
+    regexp: "^epgsearch.IgnorePayTV"
+    line: "epgsearch.IgnorePayTV = 1"
+  when: '"vdr-plugin-epgsearch" in vdr_plugins'
+
+- name: set ReplaceOrgSchedule
+  lineinfile:
+    owner: "{{  vdr.user  }}"
+    group: "{{  vdr.group }}"
+    create: yes
+    path: "{{ vdr.home }}/setup.conf"
+    regexp: "^epgsearch.ReplaceOrgSchedule"
+    line: "epgsearch.ReplaceOrgSchedule = 1"
+  when: '"vdr-plugin-epgsearch" in vdr_plugins'
+
+- name: set ShowChannelGroups
+  lineinfile:
+    owner: "{{  vdr.user  }}"
+    group: "{{  vdr.group }}"
+    create: yes
+    path: "{{ vdr.home }}/setup.conf"
+    regexp: "^epgsearch.ShowChannelGroups"
+    line: "epgsearch.ShowChannelGroups = 1"
+  when: '"vdr-plugin-epgsearch" in vdr_plugins'
+
+- name: set ShowChannelNr
+  lineinfile:
+    owner: "{{  vdr.user  }}"
+    group: "{{  vdr.group }}"
+    create: yes
+    path: "{{ vdr.home }}/setup.conf"
+    regexp: "^epgsearch.ShowChannelNr"
+    line: "epgsearch.ShowChannelNr = 1"
+  when: '"vdr-plugin-epgsearch" in vdr_plugins'
+
+- name: set OSDTheme
+  lineinfile:
+    owner: "{{  vdr.user  }}"
+    group: "{{  vdr.group }}"
+    create: yes
+    path: "{{ vdr.home }}/setup.conf"
+    regexp: "^epgsearch.ShowRadioChannels"
+    line: "epgsearch.ShowRadioChannels = 0"
+  when: '"vdr-plugin-epgsearch" in vdr_plugins'
+
+- name: set UseSearchTimers
+  lineinfile:
+    owner: "{{  vdr.user  }}"
+    group: "{{  vdr.group }}"
+    create: yes
+    path: "{{ vdr.home }}/setup.conf"
+    regexp: "^epgsearch.UseSearchTimers"
+    line: "epgsearch.UseSearchTimers = 1"
+  when: '"vdr-plugin-epgsearch" in vdr_plugins'
+
+### extrecmenu
+
+- name: set FileSystemFreeMB
+  lineinfile:
+    owner: "{{  vdr.user  }}"
+    group: "{{  vdr.group }}"
+    create: yes
+    path: "{{ vdr.home }}/setup.conf"
+    regexp: "^extrecmenung.FileSystemFreeMB"
+    line: "extrecmenung.FileSystemFreeMB = 1"
+  when: '"vdr-plugin-extrecmenu" in vdr_plugins'
+
+- name: set GoLastReplayed
+  lineinfile:
+    owner: "{{  vdr.user  }}"
+    group: "{{  vdr.group }}"
+    create: yes
+    path: "{{ vdr.home }}/setup.conf"
+    regexp: "^extrecmenung.GoLastReplayed"
+    line: "extrecmenung.GoLastReplayed = 1"
+  when: '"vdr-plugin-extrecmenu" in vdr_plugins'
+
+- name: set HideMainMenuEntry
+  lineinfile:
+    owner: "{{  vdr.user  }}"
+    group: "{{  vdr.group }}"
+    create: yes
+    path: "{{ vdr.home }}/setup.conf"
+    regexp: "^extrecmenung.HideMainMenuEntry"
+    line: "extrecmenung.HideMainMenuEntry = 0"
+  when: '"vdr-plugin-extrecmenu" in vdr_plugins'
+
+- name: set ReplaceOrgRecMenu
+  lineinfile:
+    owner: "{{  vdr.user  }}"
+    group: "{{  vdr.group }}"
+    create: yes
+    path: "{{ vdr.home }}/setup.conf"
+    regexp: "^extrecmenung.ReplaceOrgRecMenu"
+    line: "extrecmenung.ReplaceOrgRecMenu = 1"
+  when: '"vdr-plugin-extrecmenu" in vdr_plugins'
+
+- name: set UndeleteTimeOut
+  lineinfile:
+    owner: "{{  vdr.user  }}"
+    group: "{{  vdr.group }}"
+    create: yes
+    path: "{{ vdr.home }}/setup.conf"
+    regexp: "^extrecmenung.UndeleteTimeOut"
+    line: "extrecmenung.UndeleteTimeOut = 10"
+  when: '"vdr-plugin-extrecmenu" in vdr_plugins'
+
+### live-ng
+
+- name: set LastChannel
+  lineinfile:
+    owner: "{{  vdr.user  }}"
+    group: "{{  vdr.group }}"
+    create: yes
+    path: "{{ vdr.home }}/setup.conf"
+    regexp: "^live.LastChannel"
+    line: "live.LastChannel = 168"
+  when: '"vdr-plugin-live-ng" in vdr_plugins'
+
+- name: set UseAuth
+  lineinfile:
+    owner: "{{  vdr.user  }}"
+    group: "{{  vdr.group }}"
+    create: yes
+    path: "{{ vdr.home }}/setup.conf"
+    regexp: "^live.UseAuth"
+    line: "live.UseAuth = 0"
+  when: '"vdr-plugin-live-ng" in vdr_plugins'
+
+### markad
+
+- name: set AutoLogoExtraction
+  lineinfile:
+    owner: "{{  vdr.user  }}"
+    group: "{{  vdr.group }}"
+    create: yes
+    path: "{{ vdr.home }}/setup.conf"
+    regexp: "^markad.AutoLogoExtraction"
+    line: "markad.AutoLogoExtraction = 2"
+  when: '"vdr-plugin-markad-ng" in vdr_plugins'
+
+- name: set Execution
+  lineinfile:
+    owner: "{{  vdr.user  }}"
+    group: "{{  vdr.group }}"
+    create: yes
+    path: "{{ vdr.home }}/setup.conf"
+    regexp: "^markad.Execution"
+    line: "markad.Execution = 1"
+  when: '"vdr-plugin-markad-ng" in vdr_plugins'
+
+- name: set OSDMessage
+  lineinfile:
+    owner: "{{  vdr.user  }}"
+    group: "{{  vdr.group }}"
+    create: yes
+    path: "{{ vdr.home }}/setup.conf"
+    regexp: "^markad.OSDMessage"
+    line: "markad.OSDMessage = 1"
+  when: '"vdr-plugin-markad-ng" in vdr_plugins'
+
+- name: set useVPS
+  lineinfile:
+    owner: "{{  vdr.user  }}"
+    group: "{{  vdr.group }}"
+    create: yes
+    path: "{{ vdr.home }}/setup.conf"
+    regexp: "^markad.useVPS"
+    line: "markad.useVPS = 1"
+  when: '"vdr-plugin-markad-ng" in vdr_plugins'
+
+- name: set whileRecording
+  lineinfile:
+    owner: "{{  vdr.user  }}"
+    group: "{{  vdr.group }}"
+    create: yes
+    path: "{{ vdr.home }}/setup.conf"
+    regexp: "^markad.whileRecording"
+    line: "markad.whileRecording = 1"
+  when: '"vdr-plugin-markad-ng" in vdr_plugins'
+
+- name: set whileReplaying
+  lineinfile:
+    owner: "{{  vdr.user  }}"
+    group: "{{  vdr.group }}"
+    create: yes
+    path: "{{ vdr.home }}/setup.conf"
+    regexp: "^markad.whileReplaying"
+    line: "markad.whileReplaying = 1"
+  when: '"vdr-plugin-markad-ng" in vdr_plugins'
+
+## softhdvaapi
+
+- name: set AudioSoftvol
+  lineinfile:
+    owner: "{{  vdr.user  }}"
+    group: "{{  vdr.group }}"
+    create: yes
+    path: "{{ vdr.home }}/setup.conf"
+    regexp: "^softhdvaapi.AudioSoftvol"
+    line: "softhdvaapi.AudioSoftvol = 1"
+  when: '"vdr-plugin-softhdvaapi" in vdr_plugins'
