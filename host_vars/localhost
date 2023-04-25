@@ -1,0 +1,108 @@
+# "Umschalten" für jammy (22.04)
+branch: jammy
+ppa_owner: 'ppa:seahawk1986-hotmail'
+
+# copy channels.conf from a local file
+vdr_channels_conf: host_vars/channels.conf
+
+# add the vdr plugins you want to install
+vdr_plugins:
+  - vdr-plugin-devstatus
+  - vdr-plugin-markad-ng
+  - vdr-plugin-noepg
+  - vdr-plugin-extrecmenu
+  - vdr-plugin-live-ng
+  - vdr-plugin-vnsiserver-ng
+  - vdr-plugin-softhdvaapi
+  - vdr-plugin-skindesigner
+  - vdr-plugin-epgsearch
+  - vdr-plugin-streamdev-server
+#  - vdr-plugin-streamdev-client
+#  - vdr-plugin-burn
+#  - vdr-skin-anthra-1920-bfse
+# this allows to set up streamdev-client - set the server, port and number of devices
+#streamdev_client_remote_ip: "192.168.30.25"
+#streamdev_client_remote_port: 2004
+#streamdev_client_num_provided_systems: 1
+
+# set the name of the output plugin (as used by vdrctl) - this defaults to softhddevice on x64 platforms and rpihddevice on Raspberry Pi 2 and 3
+# set the package name of the output plugin - this defaults to vdr-plugin-softhddevice on x64 platforms and vdr-plugin-rpihddevice on Raspberry Pi 2 and 3
+#
+# sollte jetzt automatisch auf Intel && !Nvidia passieren
+#vdr_output_plugin: vdr-plugin-softhdvaapi
+
+# IP (range) filter for vdr and plugins (this must be an array):
+vdr_allowed_hosts:
+   - 192.168.30.0/24
+
+# hosts and subnets for svdrphosts.conf (overrides vdr_allowed_hosts):
+vdr_svdrphosts:
+   - 192.168.30.0/24
+
+# additional packages you want to install
+extra_packages:
+  - htop
+  - tree
+  - vim
+  - w-scan
+  - t2scan
+  - vdrpbd
+  - mc
+  - inxi
+  - vainfo
+  - lm-sensors
+  - powertop
+
+# choose which channellogos to download from the github.com/Jasmeet181 mediaportal-*-logos repositories
+# currently suported langugages/regions are: au, be, cz, de, es, ie, il, it, nordic, nz, ru, uk, us
+#
+channellogo_languages:
+#  - au
+#  - be
+#  - cz
+  - de
+#  - es
+#  - ie
+#  - il
+#  - it
+#  - nordic
+#  - nz
+#  - ru
+#  - uk
+#  - us
+
+# vdr shutdown command - SHUTDOWNCMD variable in /etc/default/vdr
+# for standby use "/bin/systemctl suspend"
+#vdr_shutdown_command: poweroff
+
+# choose one of acpiwakeup, stm32wakeup
+#wakeup_method: acpiwakeup
+
+# start given number of minutes earlier than the wakeuptime set by vdr
+wakeup_start_ahead: 7
+
+# set days of the week for automatic wakeup (1=Monday...7=Sunday),
+# set empty string to disable wakeup
+# eg. to wake up on Monday and Friday:
+# wakeup_days: "1 5"
+# muss mit den Zeiten in /etc/cron.d/vdr-scan-epg korrespondieren
+wakeup_days: "1 4"
+
+# set wakeup time for automatic wakeup
+# set empty string to disable
+# e.g. for wakeup at midnight:
+# wakeup_time: "00:00"
+wakeup_time: "03:00"
+
+# this will set the primary display as connected and force KMS to load
+# the EDID saved when the role yavdr-xorg detects the connected displays
+#intel_set_boot_edid: false
+
+# settings for grub
+grub:
+  timeout: 0
+  boot_options: quiet splash
+
+# settings for vdr-addon-lifeguard-ng
+# check for local processes
+lifeguard_processes: [ffmpeg]
