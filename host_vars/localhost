@@ -16,6 +16,7 @@ vdr_plugins:
   - vdr-plugin-softhdvaapi
   - vdr-plugin-skindesigner
   - vdr-plugin-epgsearch
+  - vdr-plugin-femon
   - vdr-plugin-streamdev-server
 #  - vdr-plugin-streamdev-client
 #  - vdr-plugin-burn
