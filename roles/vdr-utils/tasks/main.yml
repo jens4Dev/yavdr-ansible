@@ -19,6 +19,15 @@
     mode: 0754
     force: yes
 
+- name: "sync2sys | script to clone system to second partition - CUSTOMIZE MANUALLY"
+  copy:
+    src: "sync2sys"
+    dest: "/usr/local/sbin/sync2sys"
+    owner: "root"
+    group: "root"
+    mode: 0744
+    force: yes
+
 # not perfect, but works when starting ansible like written in yavdr-doc
 - name: "Create bash_aliases with some helpful definitions"
   copy:
