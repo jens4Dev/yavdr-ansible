@@ -1,0 +1,109 @@
+#!/bin/bash
+
+# Sync active system's partition to the second system partition
+# 
+# Use before updates to have directly bootable backup
+
+# Contrib to https://askubuntu.com/questions/1028604/backup-clone-live-to-a-new-partition-which-can-be-booted/1028605#1028605
+
+# config to your system..
+TargetDev="/dev/sdb3"
+TargetMnt="/mnt/disk2"
+TargetDevShort=${TargetDev#/dev/}
+
+# find UUID of base partition and clone
+SourceDevFstab=$(grep -v -e "^#" /etc/fstab | grep -F " / " | cut -d "/" -f 5 | cut -d " " -f 1)
+SourceDev=$(mount | grep -F " / " | cut -d " " -f 1)
+SourceDevShort=${SourceDev#/dev/}
+SourceUUID=$(blkid "$SourceDev" | cut -d "=" -f 2 | cut -d " " -f 1 | sed -e 's/"//g')
+TargetUUID=$(blkid "$TargetDev" | cut -d "=" -f 2 | cut -d " " -f 1 | sed -e 's/"//g')
+eyeCatcherFile="Clone_Of_System_$SourceDevShort"
+
+# some checks
+# should not empty..
+if [ -z "$SourceDev" ] || [ -z "$SourceDevFstab" ] || [ -z "$SourceUUID" ] || [ -z "$TargetUUID" ]; then
+   echo "Something wrong - one string is empty: SourceDev '$SourceDev' SourceDevFstab '$SourceDevFstab' SourceUUID '$SourceUUID' TargetUUID '$TargetUUID'"
+   exit 1
+fi
+# SourceDevFstab and SourceDev should be the same (no idea why not, however, double check...)
+if [ "$SourceDevFstab" != "$SourceUUID" ]; then
+   echo "Root device UUID from /etc/fstab differs from root of mount resolved via blkid ($SourceDevFstab and $SourceUUID) - not certain if ok - stop here.."
+   exit 1
+fi
+# should not find the eye-catcher
+if [ -f "$eyeCatcherFile" ]; then
+   echo "Found eye-catcher $eyeCatcherFile! Please check - cannot run from cloned system!"
+   exit 1
+fi
+# should not find $TargetDev in /etc/fstab
+if grep -q "$TargetDev" /etc/fstab
+then
+   echo "$TargetDev found in /etc/fstab - THIS WON't WORK - misconfigured? Already mounted clone? Running the clone?"
+   exit 1
+fi
+# should not find $TargetUUID in /etc/fstab
+if grep -q "$TargetUUID" /etc/fstab
+then
+   echo "$TargetUUID found in /etc/fstab - THIS WON't WORK - misconfigured? Already mounted clone? Running the clone?"
+   exit 1
+fi
+
+echo ""
+echo "====================================================================="
+echo "Source is on $SourceDev with UUID $SourceUUID"
+echo "Clone will be on $TargetDev with UUID $TargetUUID"
+
+# Mount other part (dynamic? Fixed)
+echo ""
+echo "====================================================================="
+echo "Mounting clone partition $TargetDev as $TargetMnt"
+mkdir -p "$TargetMnt"
+mount "$TargetDev" "$TargetMnt"
+
+echo ""
+echo "====================================================================="
+echo "Using rsync to clone / to ${TargetDev} mounted as ${TargetMnt}"
+rsync -haxAX --stats --delete --info=progress2 --info=name0 --inplace  \
+      /* "$TargetMnt"                                                   \
+      --exclude={/dev/*,/proc/*,/sys/*,/tmp/*,/run/*,/mnt/*,/media/*,/lost+found,/srv/*,/snap/*}
+
+# Update /etc/fstab on clone partition with clone's UUID
+echo ""
+echo "====================================================================="
+echo "Making changes in: $TargetMnt/etc/fstab"
+echo "        from UUID: $SourceUUID"
+echo "          to UUID: $TargetUUID"
+sed -i "s/$SourceUUID/$TargetUUID/g" "$TargetMnt"/etc/fstab
+# only for fixing the comment..
+sed -i "s/$SourceDevShort/$TargetDevShort/g" "$TargetMnt"/etc/fstab
+
+# Update /boot/grub/grub.cfg on clone partition with clone's UUID
+echo ""
+echo "====================================================================="
+echo "Making changes in: $TargetMnt/boot/grub/grub.cfg"
+echo "        from UUID: $SourceUUID"
+echo "          to UUID: $TargetUUID"
+sed -i "s/$SourceUUID/$TargetUUID/g" "$TargetMnt"/boot/grub/grub.cfg
+
+# /etc/default/grub: activate OS_PROBER
+osProb="GRUB_DISABLE_OS_PROBER=false"
+grubCfg="/etc/default/grub"
+grep -qF -- "$osProb" "$grubCfg" || echo "$osProb" >> "$grubCfg"
+
+# Update grub boot menu
+echo ""
+echo "====================================================================="
+echo "Calling 'update-grub' to create new boot menu"
+echo "with GRUB_DISABLE_OS_PROBER=false"
+update-grub
+
+# Create marker for clone
+echo ""
+echo "====================================================================="
+echo "Create an eye-catcher on the clone as /$eyeCatcherFile"
+touch "$TargetMnt/$eyeCatcherFile"
+
+echo ""
+echo "====================================================================="
+echo "Unmounting $TargetDev as $TargetMnt"
+umount "$TargetMnt"
