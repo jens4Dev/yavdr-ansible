@@ -9,6 +9,8 @@
 /var/lib/vdr/timers.conf
 /var/lib/vdr/plugins/menuorg.xml
 /var/lib/vdr/plugins/noepg/settings.conf
+/var/lib/vdr/plugins/epgsearch/epgsearch.conf
+/var/lib/vdr/plugins/epgsearch/timersdone.conf
 /usr/local/bin/temperatures.optiplex
 /usr/lib/vdr/plugins/skindesigner/scripts/vdrstats
 /usr/lib/vdr/plugins/skindesigner/scripts/temperatures
