@@ -35,6 +35,11 @@
     mode: 0754
     force: no
 
+- name: set VIDEODIR as search-path for vt's server functionality
+  template:
+    src: vdr-transcode-s.conf.j2
+    dest: /etc/vdr-transcode-s.conf
+
 - name: set VIDEODIR for shells in /etc/profile.d/
   template:
     src: vdr-transcode-videodir.sh.j2
