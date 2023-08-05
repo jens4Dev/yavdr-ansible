@@ -39,9 +39,15 @@ Anpassungen an der setup.conf wie ich es gern mag (Skin, Plugin-Einstellungen us
 
 ### my-vdr-utils
 
-Ein paar zusätzliche Helferlein wie Shell-Aliase, ein Skindesigner-Skript für die Hardware-Daten des Optiplex, ein Skript zum regelmässigen EPG-Scan per 
-Wakeup-Timer-Setting und einem Cron-Eintrag für die Tage (dynamisch als localhost übernommen). Außerdem sync2sys, um das aktuelle System bootfähig auf die
-zweite Systempartition zu clonen und zwei Skripte zum Konvertieren zwischen VDR- und MP4-Files.
+Ein paar zusätzliche Helferlein wie:
+
+- Shell-Aliase
+- ein Skindesigner-Skript für die Hardware-Daten des Optiplex
+- ein Skript zum regelmässigen EPG-Scan per Wakeup-Timer-Setting und einem Cron-Eintrag für die Tage (dynamisch als localhost übernommen)
+- sync2sys, um das aktuelle System bootfähig auf die zweite Systempartition zu clonen und zwei Skripte zum Konvertieren zwischen VDR- und MP4-Files (basiert auf 
+<https://askubuntu.com/questions/1028604/backup-clone-live-to-a-new-partition-which-can-be-booted/1028605#1028605>). Muss manuell konfiguriert werden, bezüglich
+Quelle und Ziel - für mein System passt es...
+- kleines Skript um wichtige Config-Files als tgz zu sichern (übernommen von meinem alten yaVDR, wo ich noch nicht die playbooks angepasst hatte)
 
 ### add-menuorg-softhdvaapi
 
