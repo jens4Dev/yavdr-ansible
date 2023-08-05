@@ -17,14 +17,14 @@
     mode: 0754
     force: yes
 
-- name: "vdr-transcode | Copy main script's sym-link"
-  copy:
-    src: /usr/local/src/vdr-transcode/vt
+- name: "vdr-transcode | Create main script's sym-link"
+  file:
+    src: "/usr/local/bin/vdr-transcode"
     dest: "/usr/local/bin/vt"
     owner: "root"
     group: "{{ vdr.group }}"
-    mode: 0754
     force: yes
+    state: link
 
 - name: "vdr-transcode.conf | Copy config file"
   copy:
