@@ -17,3 +17,6 @@
 /home/user/yavdr-ansible/host_vars/
 /home/user/.bash_aliases
 /usr/local/etc/vdr-config-backup.lst
+/var/lib/vdr/.kodi/userdata/passwords.xml
+/var/lib/vdr/.kodi/userdata/sources.xml
+/var/lib/vdr/.kodi/userdata/guisettings.xml
