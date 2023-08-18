@@ -1,0 +1,15 @@
+---
+# add overwrite to eventlircd-rules to avoid picking FLIRC-USB for eventlirc
+
+- name: "Copy base config file"
+  copy:
+    src: "/usr/lib/udev/rules.d/98-eventlircd.rules"
+    dest: "/etc/udev/rules.d/"
+    mode: 0644
+    force: yes
+
+- name: "Patch to disable rules for FLIRC"
+  ansible.posix.patch:
+    src: files/98-eventlircd.rules.patch
+    dest: "/etc/udev/rules.d/98-eventlircd.rules"
+    backup: false

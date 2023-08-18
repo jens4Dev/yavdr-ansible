@@ -32,6 +32,7 @@
     - pulseaudio                 # install pulseaudio
     - yavdr-xorg                 # graphical session
     - yavdr-remote               # remote configuration files, services and scripts
+    - flirc-remote               # disable FLIRC-USB in eventlircd and patch remote.conf for extended FLIRC-KODI-profile of MyHarmony
     - yavdr-desktop              # openbox session with yavdr frontend script
     - osd2web                    # configure osd2web to run on the second display if there is any
     - autoinstall-satip          # install vdr-plugin-satip if a Sat>IP server has been found
