@@ -53,6 +53,7 @@ extra_packages:
   - vainfo
   - lm-sensors
   - powertop
+  - kodi-inputstream-adaptive
 
 # choose which channellogos to download from the github.com/Jasmeet181 mediaportal-*-logos repositories
 # currently suported langugages/regions are: au, be, cz, de, es, ie, il, it, nordic, nz, ru, uk, us
@@ -101,8 +102,8 @@ wakeup_time: "03:00"
 
 # settings for grub
 grub:
-  timeout: 0
-  boot_options: quiet splash
+  timeout: 3
+  boot_options: quiet splash nosgx
 
 # settings for vdr-addon-lifeguard-ng
 # check for local processes
