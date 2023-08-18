@@ -1,0 +1,24 @@
+--- 98-eventlircd.rules	2023-08-18 13:05:26.898345600 +0200
++++ 98-eventlircd.rules.new	2023-08-18 13:04:31.582242800 +0200
+@@ -1,4 +1,11 @@
+-################################################################################
++#
++# Copy of yavdr's /usr/lib/udev/rules.d/98-eventlircd.rules 
++#
++#   Changed to disable eventlirc for FLIRC
++#
++#   Changing back only FLIRC's entry with a rule of higher priority did not work
++#
++#################################################################################
+ # An example udev rules file for eventlircd.
+ #
+ # This rules file does not start eventlircd. Many applications only check for
+@@ -170,7 +177,7 @@
+ 
+ # FLIRC receiver
+ ENV{ID_VENDOR_ID}=="20a0", ENV{ID_MODEL_ID}=="0006", \
+-  ENV{eventlircd_enable}="true", \
++  ENV{eventlircd_enable}="false", \
+   ENV{eventlircd_evmap}="flirc.evmap"
+ 
+ # Enable wake-on-usb for the USB remotes.
