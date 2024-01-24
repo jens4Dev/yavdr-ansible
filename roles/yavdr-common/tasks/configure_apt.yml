@@ -28,3 +28,11 @@
   apt:
       upgrade: dist
       update_cache: yes
+
+# disable automatic apt update - creates delays and jitter on screen for me...
+- name: disable periodic apt update
+  lineinfile: 
+    path: /etc/apt/apt.conf.d/10periodic
+    regexp: '^(.*)APT::Periodic::Update-Package-Lists(.*)$' 
+    line: 'APT::Periodic::Update-Package-Lists "0";'
+    backrefs: yes
