@@ -485,7 +485,11 @@
   when: '"vdr-plugin-markad-ng" in vdr_plugins'
 
 ## softhdvaapi
+## im yavdr gebaut aus: https://github.com/jojo61/vdr-plugin-softhdcuvid
 
+## softhddevice.AudioSoftvol = 0
+## 0 = off, use hardware volume control
+## 1 = on, use software volume control
 - name: set AudioSoftvol
   lineinfile:
     owner: "{{  vdr.user  }}"
@@ -494,4 +498,30 @@
     path: "{{ vdr.home }}/setup.conf"
     regexp: "^softhdvaapi.AudioSoftvol"
     line: "softhdvaapi.AudioSoftvol = 1"
+  when: '"vdr-plugin-softhdvaapi" in vdr_plugins'
+
+## <res> of the next parameters is 576i, 720p, 1080i_fake or 1080i.
+## 1080i_fake is 1280x1080 or 1440x1080
+## 1080i is "real" 1920x1080
+
+## softhddevice.<res>.Deinterlace = 0
+## 0 = bob, 1 = weave, 2 = temporal, 3 = temporal_spatial, 4 = software
+### (only 0, 1, 4 supported with VA-API)
+- name: set Deinterlace1080i
+  lineinfile:
+    owner: "{{  vdr.user  }}"
+    group: "{{  vdr.group }}"
+    create: yes
+    path: "{{ vdr.home }}/setup.conf"
+    regexp: "^softhdvaapi.1080i.Deinterlace"
+    line: "softhdvaapi.1080i.Deinterlace = 1"
+  when: '"vdr-plugin-softhdvaapi" in vdr_plugins'
+- name: set Deinterlace576i
+  lineinfile:
+    owner: "{{  vdr.user  }}"
+    group: "{{  vdr.group }}"
+    create: yes
+    path: "{{ vdr.home }}/setup.conf"
+    regexp: "^softhdvaapi.576i.Deinterlace"
+    line: "softhdvaapi.576i.Deinterlace = 1"
   when: '"vdr-plugin-softhdvaapi" in vdr_plugins'
