@@ -7,7 +7,7 @@
         name: flatpak
         state: present
     - name: Add the flathub flatpak repository remote to the user installation
-      community.general.flatpak_remote:
+      flatpak_remote:
         name: flathub
         state: present
         flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
@@ -19,7 +19,7 @@
         remote: flathub
   
     - name: Upgrade all flatpaks
-      ansible.builtin.command: flatpak update --noninteractive
+      command: flatpak update --noninteractive
       register: flatpak_update_output
       changed_when: "'app/' in flatpak_update_output.stdout"
   when: kodi_as_flatpak
