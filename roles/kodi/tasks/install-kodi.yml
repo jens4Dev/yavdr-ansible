@@ -22,6 +22,21 @@
       command: flatpak update --noninteractive
       register: flatpak_update_output
       changed_when: "'app/' in flatpak_update_output.stdout"
+
+    - name: check if the nvidia version matches if the module has been loaded
+      shell: |
+       test -f /proc/driver/nvidia/version || exit 0
+       installed_version=$(grep -Po '\d+\.\d+\.\d+' /proc/driver/nvidia/version)
+       flatpak_version=$(flatpak list | awk '/nvidia-/{sub(/nvidia-/, "", $1); gsub(/-/, ".", $1); print $1}')
+       if [ "$installed_version" != "$flatpak_version" ]
+       then
+         exit 1
+       fi
+       exit 0
+      register:  flatpak_nvidia_mismatch
+      failed_when: flatpak_nvidia_mismatch.rc > 1
+      changed_when: flatpak_nvidia_mismatch.rc == 1
+      notify: "rerun required"
   when: kodi_as_flatpak
 
 
