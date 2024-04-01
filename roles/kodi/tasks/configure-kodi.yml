@@ -8,19 +8,16 @@
 
 - name: create kodi user directory
   file:
-      dest: '{{ vdr.home }}/{{ item }}'
+      dest: '{{ kodi_config_dir }}/userdata/keymaps'
       state: directory
       owner: '{{ vdr.user }}'
       group: '{{ vdr.group }}'
       mode: "0775"
-  with_items:
-      - .kodi
-      - .kodi/userdata
-      - .kodi/userdata/keymaps
+      recurse: yes
 
 - name: copy Lircmap.xml if it does not exist yet
   copy:
-      dest: '{{ vdr.home }}/.kodi/userdata/Lircmap.xml'
+      dest: '{{ kodi_config_dir }}/userdata/Lircmap.xml'
       src: 'files/userdata/Lircmap.xml'
       owner: '{{ vdr.user }}'
       group: '{{ vdr.group }}'
@@ -29,7 +26,7 @@
 
 - name: copy remote.xml if it does not exist yet
   copy:
-      dest: '{{ vdr.home }}/.kodi/userdata/keymaps/remote.xml'
+      dest: '{{ kodi_config_dir }}/userdata/keymaps/remote.xml'
       src: 'files/userdata/keymaps/remote.xml'
       owner: '{{ vdr.user }}'
       group: '{{ vdr.group }}'

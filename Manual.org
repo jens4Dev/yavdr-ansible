@@ -15,6 +15,7 @@
   - [[#media-directories][Media directories]]
   - [[#nfs][NFS]]
   - [[#samba][Samba]]
+  - [[#kodi][KODI]]
   - [[#additional-packages][Additional packages]]
   - [[#channellogos][Channellogos]]
   - [[#system-pre-configuration][System pre-configuration]]
@@ -61,7 +62,7 @@
   - [[#autoinstall-dvbsddevice][autoinstall-dvbsddevice]]
   - [[#autoinstall-hardware-irmp][autoinstall-hardware-irmp]]
   - [[#serial-ir-receivers][Serial IR Receivers]]
-  - [[#kodi][kodi]]
+  - [[#kodi-1][kodi]]
   - [[#dvd][dvd]]
   - [[#vdr-epg-daemon][vdr-epg-daemon]]
   - [[#install-sundtek][install-sundtek]]
@@ -526,6 +527,10 @@ samba:
   workgroup: YAVDR
   windows_compatible: '{{ vdr.safe_dirnames }}'  # set to true to disable unix extensions, enable follow symlinks and wide links
 
+#+END_SRC
+** KODI
+#+BEGIN_SRC yaml :tangle group_vars/all :mkdirp yes
+kodi_as_flatpak: False
 #+END_SRC
 ** Additional packages
 #+BEGIN_SRC yaml :tangle group_vars/all :mkdirp yes
@@ -8395,6 +8400,12 @@ install serial_ir setserial /dev/{{ serial_ir_device }} uart none; /sbin/modprob
 {% endif %}
 #+END_SRC
 ** kodi
+*** defaults
+
+#+BEGIN_SRC yaml :tangle roles/kodi/defaults/main.yml
+kodi_as_flatpak: False
+kodi_config_dir: '{{ vdr.home }}/{{ kodi_as_flatpak | ternary(".var/app/tv.kodi.Kodi/data/", ".kodi") }}'
+#+END_SRC
 *** tasks
 **** Install KODI
 ***** main.yml

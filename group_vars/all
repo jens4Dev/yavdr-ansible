@@ -102,6 +102,7 @@ nfs:
 samba:
   workgroup: YAVDR
   windows_compatible: '{{ vdr.safe_dirnames }}'  # set to true to disable unix extensions, enable follow symlinks and wide links
+kodi_as_flatpak: False
 # additional packages you want to install
 extra_packages:
   - htop

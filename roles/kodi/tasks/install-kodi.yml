@@ -1,25 +1,53 @@
 ---
 
-- name: apt | install kodi packages
-  apt:
-    name:
-      - kodi
-      - kodi-pvr-vdr-vnsi
-      - python3-lxml
-    state: present
-    install_recommends: no
+- name: Install kodi as flatpak
+  block:
+    - name: ensure flatpak is installed
+      apt:
+        name: flatpak
+        state: present
+    - name: Add the flathub flatpak repository remote to the user installation
+      community.general.flatpak_remote:
+        name: flathub
+        state: present
+        flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
 
-- name: apt | install kodi-send (team-xbmc PPA)
-  apt:
-    name: "kodi-eventclients-kodi-send"
-    state: present
-    install_recommends: no
-  register: team_xbmc_ppa
-  ignore_errors: True
+    - name: flatpak | install kodi packages
+      flatpak:
+        name: "tv.kodi.Kodi"
+        state: present
+        remote: flathub
+  
+    - name: Upgrade all flatpaks
+      ansible.builtin.command: flatpak update --noninteractive
+      register: flatpak_update_output
+      changed_when: "'app/' in flatpak_update_output.stdout"
+  when: kodi_as_flatpak
 
-- name: apt | install kodi-send (fallback)
-  apt:
-    name: "kodi-eventclients-xbmc-send" # fallback to old xbmc-send package
-    state: present
-    install_recommends: no
-  when: team_xbmc_ppa.failed
+
+- name: Install kodi as debian package
+  block:
+  - name: apt | install kodi packages
+    apt:
+      name:
+        - kodi
+        - kodi-pvr-vdr-vnsi
+        - python3-lxml
+      state: present
+      install_recommends: no
+  
+  - name: apt | install kodi-send (team-xbmc PPA)
+    apt:
+      name: "kodi-eventclients-kodi-send"
+      state: present
+      install_recommends: no
+    register: team_xbmc_ppa
+    ignore_errors: True
+  
+  - name: apt | install kodi-send (fallback)
+    apt:
+      name: "kodi-eventclients-xbmc-send" # fallback to old xbmc-send package
+      state: present
+      install_recommends: no
+    when: team_xbmc_ppa.failed
+  when: not kodi_as_flatpak
