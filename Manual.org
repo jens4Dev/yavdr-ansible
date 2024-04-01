@@ -344,7 +344,7 @@ For a headless server installation ~yavdr07-headless.yml~ is a good choice
 ** yavdr07-rpi.yml
 VDR-only setup for Raspberry Pi 2 and 3. At least 1 GB of RAM is recommended.
 Please note that kodi is not available at the moment.
-#+begin_src yaml :tangle yavdr07-rpi.yml
+#+begin_src yaml :tangle yavdr07-rpi.yml :padline no
 ---
 # file: yavdr07-rpi.yml
 # this playbook set up a yaVDR 0.7 installation on a Raspberry Pi 2 or 3
@@ -399,7 +399,7 @@ localhost ansible_connection=local
 #+END_SRC
 * Group Variables
 ** PPAs
-#+BEGIN_SRC yaml :tangle group_vars/all :mkdirp yes
+#+BEGIN_SRC yaml :tangle group_vars/all :mkdirp yes :padline no
 ---
 # file: group_vars/all
 # Ansible configuration, overwrite if you want to use the playbook(s) remotely
@@ -417,7 +417,7 @@ repositories:
 
 #+END_SRC
 ** Locales and Timezone
-#+BEGIN_SRC yaml :tangle group_vars/all :mkdirp yes
+#+BEGIN_SRC yaml :tangle group_vars/all :mkdirp yes :padline no
 timezone: 'Europe/Berlin'
 # timezone_hw can be set to 'UTC' or 'local' to set the preferred hardware clock
 # timezone. This variable is optional, the default behavior is to let systemd
@@ -435,7 +435,7 @@ language_packs:
   - language-pack-en
 #+END_SRC
 ** VDR user, directories, special configuration and plugins
-#+BEGIN_SRC yaml :tangle group_vars/all :mkdirp yes
+#+BEGIN_SRC yaml :tangle group_vars/all :mkdirp yes :padline no
 
 # properties of the user vdr and vdr-related options
 # NOTE: user name, uid and confdir must match the values set by the vdr package
@@ -502,7 +502,7 @@ vdr_plugins:
 
 #+END_SRC
 ** Media directories
-#+BEGIN_SRC yaml :tangle group_vars/all :mkdirp yes
+#+BEGIN_SRC yaml :tangle group_vars/all :mkdirp yes :padline no
 
 # dictionary of directories for (shared) files. Automatically exported via NFS and Samba if those roles are enabled
 media_dirs:
@@ -515,22 +515,24 @@ media_dirs:
 
 #+END_SRC
 ** NFS
-#+BEGIN_SRC yaml :tangle group_vars/all :mkdirp yes
+#+BEGIN_SRC yaml :tangle group_vars/all :mkdirp yes :padline no
 
 nfs:
   insecure: false  # set to true for OS X clients or if you plan to use libnfs as unprivileged user (e.g. KODI)
 
 #+END_SRC
 ** Samba
-#+BEGIN_SRC yaml :tangle group_vars/all :mkdirp yes
+#+BEGIN_SRC yaml :tangle group_vars/all :mkdirp yes :padline no
 samba:
   workgroup: YAVDR
   windows_compatible: '{{ vdr.safe_dirnames }}'  # set to true to disable unix extensions, enable follow symlinks and wide links
 
 #+END_SRC
 ** KODI
-#+BEGIN_SRC yaml :tangle group_vars/all :mkdirp yes
+#+BEGIN_SRC yaml :tangle group_vars/all :mkdirp yes :padline no
+# install kodi as flatpak instead of a debian package
 kodi_as_flatpak: False
+
 #+END_SRC
 ** Additional packages
 #+BEGIN_SRC yaml :tangle group_vars/all :mkdirp yes
