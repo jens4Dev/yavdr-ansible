@@ -6,6 +6,8 @@
 
 from __future__ import absolute_import, division, print_function
 __metaclass__ = type
+from collections import OrderedDict
+from typing import Generator
 import traceback
 
 from ansible.module_utils.basic import AnsibleModule
@@ -42,26 +44,20 @@ EXAMPLES = '''
 
 
 
-def find_dependencies(module, dependencies=[]):
+def find_dependencies(module, dependency_map, dependencies=[]):
     dependencies.append(module)
     if module in dependency_map:
         for dependency in dependency_map[module]:
-            find_dependencies(dependency, dependencies)
+            find_dependencies(dependency, dependency_map, dependencies)
     return dependencies
 
 
-def build_module_dependency_map():
+def module_dependency_gen() -> Generator[str, list[str]]:
     dependency_map = {}
-    with subprocess.Popen(['lsmod'],
-                          stdout=subprocess.PIPE,
-                          universal_newlines=True
-                          ) as p:
-        for line in p.stdout:
-            values = line.split()
-            if len(values) > 3:
-                #print("module {} depends on {}".format(values[0], values[3]))
-                dependency_map[values[0]] = values[3].split(',')
-    return dependency_map
+    with open('/proc/modules') as f:
+        for line in f:
+            module_name, _, _, dependencies, *_ = line.split()
+            yield module_name, list(filter(lambda x: x not in ('', '-'), dependencies.split(',')))
 
 
 def main():
@@ -82,22 +78,16 @@ def main():
 
     # Check if module is loaded
     try:
-        is_loaded = False
-        with open('/proc/modules') as modules:
-            module_name = name.replace('-', '_') + ' '
-            for line in modules:
-                if line.startswith(module_name):
-                    is_loaded = True
-                    break
+        dependency_map = dict(module_dependency_gen())
+        is_loaded = True if module_name in dependency_map else False
     except IOError as e:
         module.fail_json(msg=to_native(e), exception=traceback.format_exc(), **result)
 
     # remove module if it is loaded
     if is_loaded:
         if not module.check_mode:
-            dependency_map = build_module_dependency_map()
-            all_modules = find_dependencies(name)
-            all_modules.reverse()
+            # get a list of unique elements that keeps the original order
+            all_modules = list(OrderedDict.fromkeys(reversed(find_dependencies(name, dependency_map))))
             for kernel_module in all_modules:
                 rc, out, err = module.run_command([module.get_bin_path('rmmod', True), kernel_module])
                 if rc != 0:
