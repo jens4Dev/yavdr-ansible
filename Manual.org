@@ -5544,8 +5544,10 @@ exec openbox-session
 #+END_SRC
 **** openbox
 ***** autostart
-#+BEGIN_SRC shell :tangle roles/yavdr-desktop/templates/openbox/autostart.j2 :mkdirp yes :shebang #!/usr/bin/bash
+#+BEGIN_SRC shell :tangle roles/yavdr-desktop/templates/openbox/autostart.j2 :mkdirp yes :shebang #!/usr/bin/dash
 # forward environment variables to an environment file and the systemd user session
+export ENV
+exec bash -s << "EOF"
 env | grep "DISPLAY\|DBUS_SESSION_BUS_ADDRESS\|XDG_RUNTIME_DIR\|XDG_DATA_DIRS" > ~/.session-env
 systemctl --user import-environment DISPLAY XAUTHORITY XDG_RUNTIME_DIR XDG_DATA_DIRS DBUS_SESSION_BUS_ADDRESS
 
@@ -5574,6 +5576,7 @@ fi
 
 # start systemd units for the yavdr user session
 systemctl --user isolate yavdr-desktop.target
+EOF
 #+END_SRC
 ***** rc.xml
 #+BEGIN_SRC xml :tangle roles/yavdr-desktop/templates/openbox/rc.xml.j2 :mkdirp yes :padline no
