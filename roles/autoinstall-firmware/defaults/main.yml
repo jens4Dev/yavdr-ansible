@@ -18,3 +18,10 @@ ds3000_pci_ids:
 ds3000_usb_ids:
   - "9022:d660"
   - "0572:6831"
+
+m88rs6000_pci_ids:
+  - "1ade:8038" # S952 V3
+  - "14f1:8880" # Hauppauge WinTV HVR-5525
+
+m88ds3103_pci_ids:
+  - "14f1:8852" # S952 V2

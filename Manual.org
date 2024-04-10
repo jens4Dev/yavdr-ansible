@@ -54,6 +54,7 @@
   - [[#autoinstall-imonlcd][autoinstall-imonlcd]]
   - [[#autoinstall-imonvfd][autoinstall-imonvfd]]
   - [[#autoinstall-libcecdaemon][autoinstall-libcecdaemon]]
+  - [[#autoinstall-dvb-firmware][autoinstall-dvb-firmware]]
   - [[#autoinstall-pvr350][autoinstall-pvr350]]
   - [[#autoinstall-hauppauge-pvr][autoinstall-hauppauge-pvr]]
   - [[#autoinstall-firmware][autoinstall-firmware]]
@@ -284,7 +285,8 @@ The ~yavdr07.yml~ playbook sets up a fully-featured yaVDR installation:
     - autoinstall-hardware-irmp  # install yavdr-hardware-irmp if a matching usb device is detected
     - autoinstall-atric-usb      # preconfigure lircd for Atric IR-WakeupUSB receiver
     - autoinstall-yausbir        # preconfigure lircd for yaUsbIR receiver
-    - autoinstall-dvbsky-firmware # download and install required firmware files for dvbsky cards
+    - install-dvb-firmware       # download and install all firmware files from the LibreElec dvb-firmware git repository
+    # - autoinstall-dvbsky-firmware # download and install required firmware files for dvbsky cards
     - autoinstall-firmware       # download and install firmware files for dvb devices
     #- install-sundtek            # install and configure sundtek drivers
     #- serial-ir                  # configure a serial port for "homebrew" ir receivers (e.g. Atric V5)
@@ -327,7 +329,8 @@ For a headless server installation ~yavdr07-headless.yml~ is a good choice
     - nfs-server
     - grub-config
     - autoinstall-dvbsddevice    # install vdr-plugin-dvbsddevice if a matching card is detected
-    - autoinstall-dvbsky-firmware # download and install required firmware files for dvbsky cards
+    - install-dvb-firmware       # download and install all firmware files from the LibreElec dvb-firmware git repository
+    # - autoinstall-dvbsky-firmware # download and install required firmware files for dvbsky cards
     - autoinstall-firmware       # download and install firmware files for dvb devices
     - autoinstall-hauppauge-pvr  # install vdr-plugin-pvrinput if a matching card is found
     - autoinstall-pvr350         # install vdr-plugin-pvr350 if a matching card is detected
@@ -369,7 +372,8 @@ Please note that kodi is not available at the moment.
     #- nfs-server
     - autoinstall-atric-usb      # preconfigure lircd for Atric IR-WakeupUSB receiver
     - autoinstall-dvbsddevice    # install vdr-plugin-dvbsddevice if a matching card is detected
-    - autoinstall-dvbsky-firmware # download and install required firmware files for dvbsky cards
+    - install-dvb-firmware       # download and install all firmware files from the LibreElec dvb-firmware git repository
+    # - autoinstall-dvbsky-firmware # download and install required firmware files for dvbsky cards
     - autoinstall-firmware       # download and install firmware files for dvb devices
     - autoinstall-hardware-irmp  # install yavdr-hardware-irmp if a matching usb device is detected
     - autoinstall-hauppauge-pvr  # install vdr-plugin-pvrinput if a matching card is found
@@ -8084,6 +8088,47 @@ Size=16x2
     name: "libcec-daemon"
   when: '"2548:1002" in usb'
 #+END_SRC
+
+** autoinstall-dvb-firmware
+This tasks installs the dvb-firmwares collected by LibreElec
+*** tasks
+#+begin_src yaml :tangle roles/install-dvb-firmware/tasks/main.yml
+---
+# file roles/autoinstall-dvb-firmware/tasks/main.yml
+
+- name: install LibreElec dvb-firmware files
+  block:
+    - name: clone git repository
+      git:
+        repo: "https://github.com/LibreElec/dvb-firmware.git"
+        dest: /var/cache/dvb-firmware
+        clone: yes
+        update: yes
+        depth: 1
+        force: true
+
+    - name: get firmware files to copy
+      command: |
+        find /var/cache/dvb-firmware/firmware  -type f -regex '.*/*\.\(fw\|bin\)$' -printf '%P\n'
+      register: firmware_to_copy
+      changed_when: false
+
+
+    - name: create directories for firmware files
+      file:
+        state: directory
+        path: "/var/cache/dvb-firmware/firmware/{{ item }}"
+      loop: "{{ firmware_to_copy.stdout_lines | map('dirname') | unique }}"
+
+    - name: copy firmware files to /lib/firmware
+      copy:
+        src: "/var/cache/dvb-firmware/firmware/{{ item }}"
+        dest: /lib/firmware/
+        owner: root
+        group: root
+        mode: "0644"
+      loop: "{{ firmware_to_copy.stdout_lines }}"
+#+end_src
 ** autoinstall-pvr350
 *** tasks
 #+BEGIN_SRC yaml :tangle roles/autoinstall-pvr350/tasks/main.yml :padline no
@@ -8137,6 +8182,13 @@ ds3000_pci_ids:
 ds3000_usb_ids:
   - "9022:d660"
   - "0572:6831"
+
+m88rs6000_pci_ids:
+  - "1ade:8038" # S952 V3
+  - "14f1:8880" # Hauppauge WinTV HVR-5525
+
+m88ds3103_pci_ids:
+  - "14f1:8852" # S952 V2
 #+END_SRC
 *** tasks
 #+BEGIN_SRC yaml :tangle roles/autoinstall-firmware/tasks/main.yml :padline no
@@ -8158,6 +8210,7 @@ ds3000_usb_ids:
     checksum: sha256:5bbcfee4a0dbd55ea9d88d6b7d618afed5937a1f02962f14cdf707e108895cf7
     dest: /lib/firmware/dvb-demod-si2168-02.fw
   when: '"14f1:8852" in pci'
+  notify: ['reboot required']
 
 - name: Firmware dvb-fe-xc5000-1.6.114.fw for Hauppauge WinTV-HVR-930C
   get_url:
@@ -8167,12 +8220,20 @@ ds3000_usb_ids:
   when: '"2040:1605" in usb'
   notify: ['reboot required']
 
-- name: Firmware dvb-demod-m88rs6000.fw for Hauppauge WinTV HVR-5525
+- name: Firmware dvb-demod-m88rs6000.fw for Hauppauge WinTV HVR-5525, DVBSky S952 V3
   get_url:
     url: https://github.com/OpenELEC/dvb-firmware/raw/master/firmware/dvb-demod-m88rs6000.fw
     checksum: sha256:9ac84583d83a4222909cb568236b7786e436f27dc050e60a31df404bb1be19dc
     dest: /lib/firmware/dvb-demod-m88rs6000.fw
-  when: '"14f1:8880" in pci'
+  when: '(m88rs6000_pci_ids | union(pci)) | length > 0'
+
+- name: Firmware dvb-demod-m88ds3103.fw for DVBSky S952 V2
+  get_url:
+    url: https://github.com/OpenELEC/dvb-firmware/raw/master/firmware/dvb-demod-m88ds3103.fw
+    checksum: sha256:4767ab80ceba4a66315cbec2a07ae1f7ebbd19c5758fd098b932e02c9108eff9
+    dest: /lib/firmware/dvb-demod-m88ds3103.fw
+  when: '(m88ds3103_pci_ids | union(pci)) | length > 0'
+  notify: ['reboot required']
 
 - name: Firmware ngenge_18.fw for ngene cards
   get_url:
