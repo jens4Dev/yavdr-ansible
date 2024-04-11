@@ -8213,7 +8213,7 @@ m88ds3103_pci_ids:
 - name: Firmware dvb-demod-si2168-b40-01.fw for Hauppauge WinTV HD Solo/Duo, PCTV 292e
   get_url:
     url: https://github.com/LibreELEC/dvb-firmware/raw/master/firmware/dvb-demod-si2168-b40-01.fw
-    checksum: sha256:89e67a94aae0ed39d9735c8c5354882a8564196f7215e5bf8776b54948184592
+    checksum: sha256:d25c7deb9f69dca232ce25ab108da8ff5013d6d39088e0ec3475d97ded8af718
     dest: /lib/firmware/dvb-demod-si2168-b40-01.fw
   when: '(hauppauge_wintv_hd_usb_ids | union(usb)) | length > 0 or (hauppauge_wintv_hd_pci_ids | union(pci)) | length > 0'
   notify: ['reboot required']
