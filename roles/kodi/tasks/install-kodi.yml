@@ -27,7 +27,7 @@
       shell: |
        test -f /proc/driver/nvidia/version || exit 0
        installed_version=$(grep -m1 -Po '\d+\.\d+' /proc/driver/nvidia/version)
-       flatpak_version=$(flatpak list | sed '/nvidia-/{s/nvidia-//;s/\t.*//;s/\-/./;p})
+       flatpak_version=$(flatpak list | sed -n '/nvidia-/{s/nvidia-//;s/\t.*//;s/\-/./;p})
        if [ "$installed_version" != "$flatpak_version" ]
        then
          exit 1
