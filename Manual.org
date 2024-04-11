@@ -8117,28 +8117,31 @@ This tasks installs the dvb-firmwares collected by LibreElec
         update: yes
         depth: 1
         force: true
+      register: git_dvb_firmware
 
-    - name: get firmware files to copy
-      command: |
-        find /var/cache/dvb-firmware/firmware  -type f -regex '.*/*\.\(fw\|bin\)$' -printf '%P\n'
-      register: firmware_to_copy
-      changed_when: false
+    - name: copy firwmware files if needed
+      block:
+        - name: get firmware files to copy
+          command: |
+            find /var/cache/dvb-firmware/firmware  -type f -regex '.*/*\.\(fw\|bin\)$' -printf '%P\n'
+          register: firmware_to_copy
+          changed_when: false
 
+        - name: create directories for firmware files
+          file:
+            state: directory
+            path: "/var/cache/dvb-firmware/firmware/{{ item }}"
+          loop: "{{ firmware_to_copy.stdout_lines | map('dirname') | unique | list }}"
 
-    - name: create directories for firmware files
-      file:
-        state: directory
-        path: "/var/cache/dvb-firmware/firmware/{{ item }}"
-      loop: "{{ firmware_to_copy.stdout_lines | map('dirname') | unique | list }}"
-
-    - name: copy firmware files to /lib/firmware
-      copy:
-        src: "/var/cache/dvb-firmware/firmware/{{ item }}"
-        dest: /lib/firmware/
-        owner: root
-        group: root
-        mode: "0644"
-      loop: "{{ firmware_to_copy.stdout_lines }}"
+        - name: copy firmware files to /lib/firmware
+          copy:
+            src: "/var/cache/dvb-firmware/firmware/{{ item }}"
+            dest: /lib/firmware/
+            owner: root
+            group: root
+            mode: "0644"
+          loop: "{{ firmware_to_copy.stdout_lines }}"
+      when: git_dvb_firmware.changed or always_update_dvb_firmware | default (False)
 #+end_src
 ** autoinstall-pvr350
 *** tasks
