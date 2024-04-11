@@ -1,4 +1,4 @@
-- name: get a list of all installed packages
+- name: package_facts | lookup installed packages
   package_facts:
     manager: auto
 
