@@ -23,6 +23,11 @@
       register: flatpak_update_output
       changed_when: "'app/' in flatpak_update_output.stdout"
 
+    - name: remove unused flatpaks
+      command: flatpak uninstall --unused --noninteractive
+      register: flatpak_uninstall_output
+      changed_when: "'Uninstalling' in flatpak_uninstall_output.stdout"
+
     - name: check if the nvidia version matches if the module has been loaded
       shell: |
        test -f /proc/driver/nvidia/version || exit 0
