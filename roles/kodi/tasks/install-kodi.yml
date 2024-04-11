@@ -33,9 +33,8 @@
        test -f /proc/driver/nvidia/version || exit 0
        installed_version=$(grep -m1 -Po '\d+\.\d+' /proc/driver/nvidia/version)
        version_part=$(sed 's/\./-/g' <<< "$installed_version")
-       exit $(grep -q "^nvidia-${version_part}" < <(flatpak list))
+       grep -q "^nvidia-${version_part}" < <(flatpak list) && exit 0 || exit 1
       register:  flatpak_nvidia_mismatch
-      
       failed_when: flatpak_nvidia_mismatch.rc > 1
       changed_when: flatpak_nvidia_mismatch.rc == 1
       notify: "rerun required"
