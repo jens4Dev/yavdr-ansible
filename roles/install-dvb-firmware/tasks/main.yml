@@ -23,7 +23,7 @@
       file:
         state: directory
         path: "/var/cache/dvb-firmware/firmware/{{ item }}"
-      loop: "{{ firmware_to_copy.stdout_lines | map('dirname') | unique }}"
+      loop: "{{ firmware_to_copy.stdout_lines | map('dirname') | unique | list }}"
 
     - name: copy firmware files to /lib/firmware
       copy:
