@@ -1,21 +1,28 @@
-- name: "debconf | disable all cloud-init datasources"
-  debconf:
-    name: cloud-init
-    question: cloud-init/datasources
-    value: ''
-    vtype: select
-  register: cloud_init_debconf
+- name: get a list of all installed packages
+  package_facts:
+    manager: auto
 
-- name: "command | reconfigure cloud-init package"
-  command: dpkg-reconfigure -f noninteractive cloud-init
-  ignore_errors: yes
-  when:  cloud_init_debconf.changed
-  # notify: ['rerun required']
+- name: remove cloud-init if necessary
+  block:
+    - name: "debconf | disable all cloud-init datasources"
+      debconf:
+        name: cloud-init
+        question: cloud-init/datasources
+        value: ''
+        vtype: select
+      register: cloud_init_debconf
 
-- name: "apt | ensure package cloud-init is not installed"
-  apt:
-    name: cloud-init
-    state: absent
+    - name: "command | reconfigure cloud-init package"
+      command: dpkg-reconfigure -f noninteractive cloud-init
+      ignore_errors: yes
+      when:  cloud_init_debconf.changed
+      # notify: ['rerun required']
+
+    - name: "apt | ensure package cloud-init is not installed"
+      apt:
+        name: cloud-init
+        state: absent
+  when: "'cloud-init' in ansible_facts.packages"
 - name: apt | ensure packages for tzdata and locales are installed
   apt:
     state: present
