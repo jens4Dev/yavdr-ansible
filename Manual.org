@@ -419,6 +419,9 @@ repositories:
   - '{{ ppa_owner }}/{{branch}}-vdr'
   - '{{ ppa_owner }}/{{branch}}-kodi'
 
+# set to True to add the repository ppa:/kelebek333/nvidia-legacy for nvidia-legacy drivers (340, 390) and disable the ABI version check by the X-Server to use those old drivers
+nvidia_legacy: False
+
 #+END_SRC
 ** Locales and Timezone
 #+BEGIN_SRC yaml :tangle group_vars/all :mkdirp yes :padline no
@@ -794,6 +797,7 @@ You can set a list of package repositories which provide the necessary packages.
 #+BEGIN_SRC yaml :tangle roles/yavdr-common/defaults/main.yml :mkdirp yes :padline yes
 branch: experimental
 ppa_owner: 'ppa:yavdr'
+nvidia_legacy: False
 
 # add the following PPAs
 repositories:
@@ -998,6 +1002,13 @@ yavdr-common executes the following tasks:
   tags:
     - ppa
   when: ansible_architecture == 'armv7l'
+
+- name: add nvidia legacy PPA
+  apt_repository:
+      repo: 'ppa:kelebek333/nvidia-legacy'
+      state: present
+      update_cache: no
+  when: nvidia_legacy
 
 - name: run apt-get dist-upgrade
   apt:
@@ -4993,8 +5004,14 @@ EndSection
 ***** xorg.conf
 
 #+CAPTION: roles/yavdr-xorg/templates/xorg-verbose.conf.j2
-#+BEGIN_SRC conf :tangle roles/yavdr-xorg/templates/xorg-verbose.conf.j2
+#+BEGIN_SRC  jinja2 :tangle roles/yavdr-xorg/templates/xorg-verbose.conf.j2
 {{ ansible_managed | comment }}
+
+{% if nvidia_legacy | default(False) %}
+Section "ServerFlags"
+    Option "IgnoreABI" "true"
+EndSection
+{% endif %}
 
 Section "Device"
         Identifier "nvidia"
@@ -5010,7 +5027,7 @@ EndSection
 #+END_SRC
 
 #+CAPTION: roles/yavdr-xorg/templates/xorg.conf.j2
-#+BEGIN_SRC conf :tangle roles/yavdr-xorg/templates/xorg.conf.j2
+#+BEGIN_SRC jinja2 :tangle roles/yavdr-xorg/templates/xorg.conf.j2
 {{ ansible_managed | comment }}
 
 Section "ServerLayout"
@@ -5023,6 +5040,12 @@ Section "ServerLayout"
     #InputDevice    "Mouse0" "CorePointer"
     Option         "Xinerama" "0"
 EndSection
+
+{% if nvidia_legacy | default(False) %}
+Section "ServerFlags"
+    Option "IgnoreABI" "true"
+EndSection
+{% endif %}
 
 Section "InputClass"
     Identifier "exclude eventlircd devices"
@@ -5135,6 +5158,12 @@ Section "ServerLayout"
     InputDevice    "Keyboard0" "CoreKeyboard"
     InputDevice    "Mouse0" "CorePointer"
 EndSection
+
+{ % if nvidia_legacy | default(False) % }
+Section "ServerFlags"
+    Options "IgnoreABI" "true"
+EndSection
+{ % endif % }
 
 Section "InputDevice"
     # generated from default
